@@ -1,3 +1,5 @@
+KillerCoda Teaching Environment: https://killercoda.com/dbehelitate/scenario/kserve
+
 ## Four approaches to Serve Ai on Kubernetes 
 <img width="742" height="571" alt="Screenshot_2026-10-03_16-02-58" src="https://github.com/user-attachments/assets/444db7c2-a067-48cb-8970-3ee2d5812c80" />
   
