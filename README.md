@@ -1,5 +1,6 @@
 ## Four approaches to Serve Ai on Kubernetes 
-
+<img width="742" height="571" alt="Screenshot_2026-10-03_16-02-58" src="https://github.com/user-attachments/assets/444db7c2-a067-48cb-8970-3ee2d5812c80" />
+  
 We will use vLLM and KServe to learn about some importants Kubernetes overlooked concepts.  
 Thanks to RED HAT for teaching me about these tips and tricks.
 
@@ -15,7 +16,7 @@ https://kubernetes.io/docs/concepts/workloads/pods/sidecar-containers/
 -Modelcars:
 https://docs.redhat.com/en/documentation/red_hat_openshift_ai_self-managed/2.16/html/serving_models/about-model-serving_about-model-serving
 
-<img width="742" height="571" alt="Screenshot_2026-10-03_16-02-58" src="https://github.com/user-attachments/assets/444db7c2-a067-48cb-8970-3ee2d5812c80" />
+
 
 
 ### -initContainers + emptyDir : 
