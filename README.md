@@ -1,9 +1,16 @@
-Available as A killercoda scenario  
+<p align="center">
+  <img width="200" height="100" alt="brain_logo-B6LLJ4-J" src="https://github.com/user-attachments/assets/e692f026-dfb0-40d0-9462-ef4cfc8c5c4f" />  
+</p>  
+
+<p align="center">Available as a Killercoda scenario</p>    
+
+### <p align="center">https://killercoda.com/dbehelitate/scenario/kserve</p>       
 ---
-<img width="200" height="100" alt="brain_logo-B6LLJ4-J" src="https://github.com/user-attachments/assets/e692f026-dfb0-40d0-9462-ef4cfc8c5c4f" />   
 
-https://killercoda.com/dbehelitate/scenario/kserve
 
+
+
+      
 ## Four approaches to Serve Ai on Kubernetes 
 <img width="742" height="571" alt="Screenshot_2026-10-03_16-02-58" src="https://github.com/user-attachments/assets/444db7c2-a067-48cb-8970-3ee2d5812c80" />
   
