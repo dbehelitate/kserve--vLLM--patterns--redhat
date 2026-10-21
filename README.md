@@ -4,9 +4,8 @@
 
 <p align="center">Available as a Killercoda scenario</p>    
 
-### <p align="center">https://killercoda.com/dbehelitate/scenario/kserve</p>       
+### FREE 2 PLAY: <p align="center">https://killercoda.com/dbehelitate/scenario/kserve</p>       
 ---
-
 
 
 
