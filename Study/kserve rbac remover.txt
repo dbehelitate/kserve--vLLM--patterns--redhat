@@ -1,0 +1,9 @@
+### Optional if more space needed
+  
+```bash
+ #removing kube-rbac-proxy if space is needed
+  
+kubectl patch deployment kserve-controller-manager -n kserve --type='json' -p='[
+  {"op": "remove", "path": "/spec/template/spec/containers/1"}
+]'
+```

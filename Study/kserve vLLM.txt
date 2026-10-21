@@ -1,0 +1,126 @@
+I'm sorry, but the provided knowledge sources do not explicitly mention instructions or scenarios specifically for Killercoda. However, in interactive environments like Killercoda (which typically do not provide GPUs), you can serve a small CPU-friendly LLM using KServe's standard `InferenceService` or `LLMInferenceService` tutorials [[Deploy Your First Model](https://kserve.github.io/website/docs/getting-started/deploy-your-first)].
+
+Here are two approaches based on the documentation:
+
+---
+
+### Option 1: Standard `InferenceService` (Qwen2-0.5B-Instruct on CPU)
+
+When no `nvidia.com/gpu` resource is requested, KServe automatically selects the vLLM CPU container image [[Deploy Text Generation Model](https://kserve.github.io/website/docs/model-serving/generative-inference/tasks/text-generation#understanding-backend-options)].
+
+1. **Deploy the `InferenceService`**:
+
+```yaml
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: qwen-cpu
+spec:
+  predictor:
+    model:
+      modelFormat:
+        name: huggingface
+      args:
+        - --model_name=qwen2
+        - --dtype=bfloat16
+        - --max-model-len=2048
+      storageUri: hf://Qwen/Qwen2.5-0.5B-Instruct
+      env:
+        - name: VLLM_CPU_KVCACHE_SPACE
+          value: "4"
+        - name: VLLM_CPU_OMP_THREADS_BIND
+          value: "auto"
+        - name: VLLM_ENABLE_V1_MULTIPROCESSING
+          value: "0"
+      resources:
+        requests:
+          cpu: "4"
+          memory: 8Gi
+        limits:
+          cpu: "8"
+          memory: 16Gi
+```
+*(Adjust the CPU and memory limits to fit within the Killercoda node limits if needed).*
+
+2. **Send an inference request**:
+Once ready, query the OpenAI-compatible endpoint [[HuggingFace Serving Runtime](https://github.com/kserve/kserve/blob/master/python/huggingfaceserver/README.md)]:
+
+```bash
+curl -H "content-type:application/json" -v localhost:8080/openai/v1/completions -d '{"model": "qwen2", "prompt": "Hello, how are you?", "stream":false, "max_tokens": 30 }'
+```
+
+---
+
+### Option 2: `LLMInferenceService` (Facebook OPT-125M Single-Node CPU)
+
+If your environment has KServe's `LLMInferenceService` stack configured, you can deploy a tiny 125M parameter model [[Quick Start: Single-Node CPU Deployment](https://kserve.github.io/website/docs/getting-started/genai-first-llmisvc#quick-start-single-node-cpu-deployment)]:
+
+1. **Create the namespace**:
+```bash
+kubectl create namespace llm-demo
+```
+
+2. **Deploy the service**:
+```bash
+kubectl apply -n llm-demo -f - <<EOF
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: facebook-opt-125m-single
+spec:
+  model:
+    uri: hf://facebook/opt-125m
+    name: facebook/opt-125m
+  
+  replicas: 1
+  
+  template:
+    containers:
+      - name: main
+        image: quay.io/pierdipi/vllm-cpu:latest
+        securityContext:
+          runAsNonRoot: false  # Image requires root
+        env:
+          - name: VLLM_LOGGING_LEVEL
+            value: DEBUG
+        resources:
+          limits:
+            cpu: '1'
+            memory: 10Gi
+          requests:
+            cpu: '100m'
+            memory: 8Gi
+        livenessProbe:
+          initialDelaySeconds: 30
+          periodSeconds: 30
+          timeoutSeconds: 30
+          failureThreshold: 5
+  
+  router:
+    gateway: {}
+    route: {}
+    scheduler: {}
+EOF
+```
+
+3. **Verify readiness**:
+```bash
+kubectl get llminferenceservice facebook-opt-125m-single -n llm-demo -w
+```
+
+4. **Test inference**:
+Port-forward traffic through the ingress gateway:
+```bash
+kubectl port-forward $(kubectl get svc -n envoy-gateway-system -l serving.kserve.io/gateway=kserve-ingress-gateway --no-headers -o name) -n envoy-gateway-system 8001:80 &
+```
+
+Send a request:
+```bash
+curl -sS -X POST http://localhost:8001/llm-demo/facebook-opt-125m-single/v1/completions \
+    -H 'accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{
+        "model": "facebook/opt-125m",
+        "prompt": "Who are you?"
+      }'
+```

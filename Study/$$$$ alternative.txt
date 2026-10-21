@@ -1,0 +1,9 @@
+  - name: modelcar
+    image: docker.io/library/modelcar-tiny-gguf:latest
+    imagePullPolicy: Never
+    command:
+    - "/bin/sh"
+    - "-c"
+    args:
+    - |
+      ln -sf /proc/$(echo $$)/root/models /mnt/models && sleep infinity
